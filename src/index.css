@@ -44,7 +44,7 @@
 
 @layer components {
   .shell {
-    @apply relative min-h-screen overflow-hidden bg-base;
+    @apply relative min-h-screen overflow-x-hidden bg-base;
     background-image:
       radial-gradient(circle at top right, rgba(217, 119, 6, 0.18), transparent 28%),
       radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.12), transparent 24%);

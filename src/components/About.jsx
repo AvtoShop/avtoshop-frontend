@@ -12,21 +12,21 @@ export default function About() {
           />
 
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="panel p-6 sm:p-7">
+            <div className="panel bg-white/[0.06] p-6 sm:p-7">
               <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Подход</p>
-              <p className="mt-5 text-sm leading-7 text-muted sm:text-base">
+              <p className="mt-5 text-sm leading-7 !text-white sm:text-base">
                 Работаем с любым уровнем задач: от планового обслуживания до поиска плавающих неисправностей по ходовой, тормозам и электрике.
               </p>
             </div>
-            <div className="panel p-6 sm:p-7">
+            <div className="panel bg-white/[0.06] p-6 sm:p-7">
               <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Коммуникация</p>
-              <p className="mt-5 text-sm leading-7 text-muted sm:text-base">
+              <p className="mt-5 text-sm leading-7 !text-white sm:text-base">
                 Объясняем по-человечески, что именно происходит с автомобилем, какие работы обязательны сейчас и что можно перенести без риска.
               </p>
             </div>
-            <div className="panel p-6 sm:col-span-2 sm:p-7">
+            <div className="panel bg-white/[0.06] p-6 sm:col-span-2 sm:p-7">
               <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Результат</p>
-              <p className="mt-5 max-w-3xl text-sm leading-7 text-muted sm:text-base">
+              <p className="mt-5 max-w-3xl text-sm leading-7 !text-white sm:text-base">
                 Для клиента это выглядит просто: понятная диагностика, чистый сервисный процесс, фиксация цены до старта работ и аккуратная выдача автомобиля с рекомендациями на следующий интервал обслуживания.
               </p>
             </div>

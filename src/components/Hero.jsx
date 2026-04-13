@@ -20,8 +20,8 @@ export default function Hero() {
             <h1 className="max-w-3xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.04em] text-white sm:text-6xl lg:text-7xl">
               {BRAND_COPY.heroTitle}
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[#ded7cd] sm:text-lg">{BRAND_COPY.heroText}</p>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-muted sm:text-base">{BRAND_COPY.heroSupporting}</p>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white sm:text-lg">{BRAND_COPY.heroText}</p>
+            <p className="mt-4 max-w-xl text-sm leading-7 !text-white sm:text-base">{BRAND_COPY.heroSupporting}</p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button type="button" className="btn-primary" onClick={() => navigate({ pathname: '/', hash: '#services' })}>
@@ -52,7 +52,7 @@ export default function Hero() {
                   <p className="mt-2 text-sm leading-6 text-copy">{CONTACT_INFO.primaryPhone}</p>
                 </div>
               </div>
-              <p className="text-sm leading-7 text-muted">
+              <p className="text-sm leading-7 text-white">
                 {BRAND_COPY.cityLine}. Работаем с регулярным обслуживанием, ходовой, тормозной системой, электрикой и подготовкой к дальней дороге.
               </p>
             </div>

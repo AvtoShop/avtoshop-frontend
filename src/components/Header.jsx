@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BRAND_COPY, NAV_ITEMS } from '../lib/constants';
-import { getAdminAuthState, subscribeToAdminAuth } from '../lib/auth';
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(getAdminAuthState());
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 18);
     handleScroll();
 
     window.addEventListener('scroll', handleScroll);
-    const unsubscribe = subscribeToAdminAuth(setIsAdmin);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      unsubscribe();
     };
   }, []);
 
@@ -67,9 +63,6 @@ export default function Header() {
           >
             Вход
           </button>
-          <button type="button" className="btn-secondary !px-4 !py-2" onClick={() => navigate(isAdmin ? '/admin' : '/login')}>
-            {isAdmin ? 'Панель' : 'Админ'}
-          </button>
         </nav>
 
         <button
@@ -106,9 +99,6 @@ export default function Header() {
               onClick={() => navigate('/login')}
             >
               Вход
-            </button>
-            <button type="button" className="btn-primary" onClick={() => navigate(isAdmin ? '/admin' : '/login')}>
-              {isAdmin ? 'Открыть админку' : 'Войти как администратор'}
             </button>
           </div>
         </div>
