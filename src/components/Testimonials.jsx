@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
 import { loadTestimonials, submitTestimonial } from '../lib/api';
-import { SectionIntro, StarRating, StatusMessage } from './ui';
+import {
+  SectionIntro,
+  StarRating,
+  StatusMessage,
+  fieldClass,
+  panelClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+  sectionShellClass
+} from './ui';
 
 const emptyForm = {
   name: '',
@@ -63,7 +72,7 @@ export default function Testimonials() {
 
   return (
     <section id="testimonials" className="py-20 sm:py-24">
-      <div className="section-shell">
+      <div className={sectionShellClass}>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1fr)]">
           <div className="space-y-6">
             <SectionIntro
@@ -85,7 +94,7 @@ export default function Testimonials() {
             ) : null}
 
             {testimonials.map((review) => (
-              <article key={review.id} className="panel p-6 sm:p-7">
+              <article key={review.id} className={`${panelClass} p-6 sm:p-7`}>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h3 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{review.name}</h3>
@@ -96,7 +105,7 @@ export default function Testimonials() {
               </article>
             ))}
 
-            <div className="panel p-6 sm:p-7">
+            <div className={`${panelClass} p-6 sm:p-7`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Форма отзыва</p>
@@ -104,7 +113,7 @@ export default function Testimonials() {
                     Отзыв отправляется на API, а если сервер недоступен, сохраняется локально для предпросмотра.
                   </p>
                 </div>
-                <button type="button" className="btn-secondary" onClick={() => setFormVisible((value) => !value)}>
+                <button type="button" className={secondaryButtonClass} onClick={() => setFormVisible((value) => !value)}>
                   {formVisible ? 'Скрыть форму' : 'Оставить отзыв'}
                 </button>
               </div>
@@ -112,7 +121,7 @@ export default function Testimonials() {
               {formVisible ? (
                 <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
                   <input
-                    className="field"
+                    className={fieldClass}
                     type="text"
                     placeholder="Ваше имя"
                     value={formData.name}
@@ -120,7 +129,7 @@ export default function Testimonials() {
                     required
                   />
                   <textarea
-                    className="field min-h-32 resize-y"
+                    className={`${fieldClass} min-h-32 resize-y`}
                     placeholder="Как прошёл визит и что сделали"
                     value={formData.text}
                     onChange={(event) => setFormData((current) => ({ ...current, text: event.target.value }))}
@@ -132,7 +141,7 @@ export default function Testimonials() {
                     </label>
                     <input
                       id="testimonial-rating"
-                      className="field"
+                      className={fieldClass}
                       type="number"
                       min="1"
                       max="5"
@@ -146,7 +155,7 @@ export default function Testimonials() {
                       required
                     />
                   </div>
-                  <button type="submit" className="btn-primary" disabled={submitState.pending}>
+                  <button type="submit" className={primaryButtonClass} disabled={submitState.pending}>
                     {submitState.pending ? 'Отправляем...' : 'Отправить отзыв'}
                   </button>
                 </form>

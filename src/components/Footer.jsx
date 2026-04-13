@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { BRAND_COPY, CONTACT_INFO, NAV_ITEMS } from '../lib/constants';
+import { sectionShellClass } from './ui';
 
 export default function Footer() {
   const navigate = useNavigate();
 
   return (
     <footer className="border-t border-white/10 bg-black/40 py-10">
-      <div className="section-shell">
+      <div className={sectionShellClass}>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.9fr)_minmax(0,0.9fr)]">
           <div>
             <p className="font-display text-2xl font-semibold uppercase tracking-[0.2em] text-copy">{BRAND_COPY.name}</p>

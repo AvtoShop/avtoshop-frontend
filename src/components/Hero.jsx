@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import heroImage from '../assets/3d-car-with-simple-background_23-2150796882.avif';
 import { BRAND_COPY, CONTACT_INFO } from '../lib/constants';
+import { panelClass, primaryButtonClass, secondaryButtonClass, sectionShellClass } from './ui';
 
 export default function Hero() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-grid bg-[size:56px_56px] opacity-[0.08]" />
       </div>
 
-      <div className="section-shell relative flex min-h-[100svh] items-end pb-14 pt-28 sm:items-center sm:pb-20">
+      <div className={`${sectionShellClass} relative flex min-h-[100svh] items-end pb-14 pt-28 sm:items-center sm:pb-20`}>
         <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(300px,0.55fr)]">
           <div className="max-w-3xl animate-fade-up">
             <p className="mb-5 text-sm uppercase tracking-[0.42em] text-accentSoft">{BRAND_COPY.name}</p>
@@ -24,16 +25,16 @@ export default function Hero() {
             <p className="mt-4 max-w-xl text-sm leading-7 !text-white sm:text-base">{BRAND_COPY.heroSupporting}</p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button type="button" className="btn-primary" onClick={() => navigate({ pathname: '/', hash: '#services' })}>
+              <button type="button" className={primaryButtonClass} onClick={() => navigate({ pathname: '/', hash: '#services' })}>
                 Смотреть услуги
               </button>
-              <a className="btn-secondary" href={CONTACT_INFO.primaryPhoneHref}>
+              <a className={secondaryButtonClass} href={CONTACT_INFO.primaryPhoneHref}>
                 Позвонить в сервис
               </a>
             </div>
           </div>
 
-          <div className="panel relative overflow-hidden p-6 sm:p-8 lg:ml-auto lg:max-w-md">
+          <div className={`${panelClass} relative overflow-hidden p-6 sm:p-8 lg:ml-auto lg:max-w-md`}>
             <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-accentSoft to-transparent animate-pulseline" />
             <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Сервисный бокс</p>
             <div className="mt-6 space-y-6">

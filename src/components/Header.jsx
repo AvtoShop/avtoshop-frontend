@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BRAND_COPY, NAV_ITEMS } from '../lib/constants';
+import { secondaryButtonClass } from './ui';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function Header() {
               <button
                 key={item.id}
                 type="button"
-                className="rounded-2xl border border-white/10 px-4 py-3 text-left text-sm font-medium text-copy"
+                className="rounded-2xl border border-white/10 px-4 py-3 text-left text-sm font-medium text-copy transition hover:border-accent/50 hover:bg-white/[0.06]"
                 onClick={() => goToSection(item.id)}
               >
                 {item.label}
@@ -95,7 +96,7 @@ export default function Header() {
             ))}
             <button
               type="button"
-              className="rounded-2xl border border-white/10 px-4 py-3 text-left text-sm font-medium text-copy"
+              className={`${secondaryButtonClass} justify-start rounded-2xl px-4 py-3 text-left normal-case tracking-normal`}
               onClick={() => navigate('/login')}
             >
               Вход

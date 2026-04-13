@@ -2,7 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createService, deleteService, loadServices, updateService } from '../lib/api';
 import { setAdminAuthState } from '../lib/auth';
-import { StatusMessage } from './ui';
+import {
+  StatusMessage,
+  eyebrowClass,
+  fieldClass,
+  panelClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+  sectionCopyClass,
+  sectionShellClass,
+  sectionTitleClass
+} from './ui';
 
 const createEmptyService = () => ({
   name: '',
@@ -150,23 +160,23 @@ export default function AdminPanel() {
 
   if (loading) {
     return (
-      <section className="section-shell py-14 sm:py-20">
+      <section className={`${sectionShellClass} py-14 sm:py-20`}>
         <StatusMessage>Загружаем список услуг для админ-панели...</StatusMessage>
       </section>
     );
   }
 
   return (
-    <section className="section-shell py-14 sm:py-20">
+    <section className={`${sectionShellClass} py-14 sm:py-20`}>
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="eyebrow">Админ-панель</p>
-          <h1 className="section-title">Управление услугами и локальным предпросмотром.</h1>
-          <p className="section-copy mt-4">
+          <p className={eyebrowClass}>Админ-панель</p>
+          <h1 className={sectionTitleClass}>Управление услугами и локальным предпросмотром.</h1>
+          <p className={`${sectionCopyClass} mt-4`}>
             Создание, редактирование и удаление используют API, а при недоступности сервера продолжают работать локально.
           </p>
         </div>
-        <button type="button" className="btn-secondary" onClick={handleLogout}>
+        <button type="button" className={secondaryButtonClass} onClick={handleLogout}>
           Выйти
         </button>
       </div>
@@ -181,7 +191,7 @@ export default function AdminPanel() {
       </div>
 
       <div className="mt-10 grid gap-8 xl:grid-cols-[minmax(360px,0.72fr)_minmax(0,1fr)]">
-        <div className="panel p-6 sm:p-8">
+        <div className={`${panelClass} p-6 sm:p-8`}>
           <div className="flex items-center justify-between gap-4">
             <h2 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">
               {editingId ? 'Редактирование услуги' : 'Новая услуга'}
@@ -195,7 +205,7 @@ export default function AdminPanel() {
 
           <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
             <input
-              className="field"
+              className={fieldClass}
               type="text"
               name="name"
               placeholder="Название услуги"
@@ -204,7 +214,7 @@ export default function AdminPanel() {
               required
             />
             <input
-              className="field"
+              className={fieldClass}
               type="text"
               name="icon"
               placeholder="Код иконки или метка"
@@ -213,7 +223,7 @@ export default function AdminPanel() {
               required
             />
             <textarea
-              className="field min-h-32 resize-y"
+              className={`${fieldClass} min-h-32 resize-y`}
               name="description"
               placeholder="Описание услуги"
               value={formData.description}
@@ -221,7 +231,7 @@ export default function AdminPanel() {
               required
             />
             <input
-              className="field"
+              className={fieldClass}
               type="text"
               name="price"
               placeholder="Цена"
@@ -230,11 +240,11 @@ export default function AdminPanel() {
               required
             />
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button type="submit" className="btn-primary" disabled={pending}>
+              <button type="submit" className={primaryButtonClass} disabled={pending}>
                 {pending ? 'Сохраняем...' : editingId ? 'Обновить услугу' : 'Добавить услугу'}
               </button>
               {editingId ? (
-                <button type="button" className="btn-secondary" onClick={resetForm}>
+                <button type="button" className={secondaryButtonClass} onClick={resetForm}>
                   Отмена
                 </button>
               ) : null}
@@ -254,7 +264,7 @@ export default function AdminPanel() {
               return (
                 <article
                   key={service.id}
-                  className={`panel cursor-pointer p-6 transition duration-300 ${active ? 'border-accent/60 bg-white/[0.06]' : ''}`}
+                  className={`${panelClass} cursor-pointer p-6 transition duration-300 ${active ? 'border-accent/60 bg-white/[0.06]' : ''}`}
                   onClick={() => setSelectedId(active ? null : service.id)}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -271,7 +281,7 @@ export default function AdminPanel() {
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <button
                           type="button"
-                          className="btn-secondary"
+                          className={secondaryButtonClass}
                           onClick={(event) => {
                             event.stopPropagation();
                             handleEdit(service);
@@ -281,7 +291,7 @@ export default function AdminPanel() {
                         </button>
                         <button
                           type="button"
-                          className="btn-secondary !border-accent/30 !text-accentSoft"
+                          className={`${secondaryButtonClass} !border-accent/30 !text-accentSoft`}
                           onClick={(event) => {
                             event.stopPropagation();
                             handleDelete(service.id);
@@ -298,7 +308,7 @@ export default function AdminPanel() {
           </div>
 
           {selectedService ? (
-            <div className="panel p-6">
+            <div className={`${panelClass} p-6`}>
               <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Предпросмотр выбранной услуги</p>
               <h3 className="mt-4 font-sans text-2xl font-semibold leading-tight tracking-[0.01em] text-copy">{selectedService.name}</h3>
               <p className="mt-3 text-sm leading-7 text-muted">{selectedService.description}</p>

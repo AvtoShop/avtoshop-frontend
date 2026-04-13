@@ -12,6 +12,7 @@ import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Analytics } from '@vercel/analytics/react';
+import { appShellClass } from './components/ui';
 
 function ScrollToHash() {
   const location = useLocation();
@@ -47,7 +48,7 @@ function PublicLayout() {
 
 function AppShell() {
   return (
-    <div className="shell">
+    <div className={appShellClass}>
       <Header />
       <main>
         <Routes>

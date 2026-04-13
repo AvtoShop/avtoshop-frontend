@@ -7,8 +7,6 @@
 @layer base {
   :root {
     color-scheme: dark;
-    --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    --font-display: 'Rubik', 'Segoe UI', Arial, sans-serif;
   }
 
   html {
@@ -43,54 +41,5 @@
 
   section {
     scroll-margin-top: 6rem;
-  }
-}
-
-@layer components {
-  .shell {
-    @apply relative min-h-screen overflow-x-hidden bg-base;
-    background-image:
-      radial-gradient(circle at top right, rgba(217, 119, 6, 0.18), transparent 28%),
-      radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.12), transparent 24%);
-  }
-
-  .section-shell {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
-  }
-
-  .eyebrow {
-    @apply mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.34em] text-accentSoft;
-  }
-
-  .section-title {
-    @apply font-sans text-3xl font-semibold leading-[1.02] tracking-[0.01em] text-copy sm:text-4xl;
-  }
-
-  .section-copy {
-    @apply max-w-2xl text-sm leading-7 text-muted sm:text-base;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white transition duration-300 hover:bg-accentSoft;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-copy transition duration-300 hover:border-accent/60 hover:bg-white/10;
-  }
-
-  .field {
-    @apply w-full rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-copy outline-none transition duration-200 placeholder:text-muted focus:border-accent/70 focus:bg-white/[0.08];
-  }
-
-  .panel {
-    @apply rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-panel backdrop-blur;
-  }
-
-  .status-note {
-    @apply rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-muted;
-  }
-
-  .status-error {
-    @apply rounded-2xl border border-accent/40 bg-accent/10 px-4 py-3 text-sm leading-6 text-copy;
   }
 }

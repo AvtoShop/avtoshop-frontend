@@ -2,7 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setAdminAuthState } from '../lib/auth';
 import { BRAND_COPY } from '../lib/constants';
-import { StatusMessage } from './ui';
+import {
+  StatusMessage,
+  eyebrowClass,
+  fieldClass,
+  panelClass,
+  primaryButtonClass,
+  sectionCopyClass,
+  sectionShellClass,
+  sectionTitleClass
+} from './ui';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,17 +35,17 @@ export default function Login() {
   };
 
   return (
-    <section className="section-shell py-14 sm:py-20">
+    <section className={`${sectionShellClass} py-14 sm:py-20`}>
       <div className="grid min-h-[calc(100svh-13rem)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.7fr)] lg:items-center">
         <div className="max-w-2xl">
-          <p className="eyebrow">Вход администратора</p>
-          <h1 className="section-title max-w-xl">Доступ к управлению каталогом и локальному демо-режиму.</h1>
-          <p className="section-copy mt-5">
+          <p className={eyebrowClass}>Вход администратора</p>
+          <h1 className={`${sectionTitleClass} max-w-xl`}>Доступ к управлению каталогом и локальному демо-режиму.</h1>
+          <p className={`${sectionCopyClass} mt-5`}>
             Маршрут и логика доступа сохранены, но авторизация остаётся не блокирующей: если backend недоступен, панель всё равно открывается для локального предпросмотра.
           </p>
         </div>
 
-        <div className="panel p-6 sm:p-8">
+        <div className={`${panelClass} p-6 sm:p-8`}>
           <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">{BRAND_COPY.name}</p>
           <form className="mt-6 grid gap-4" onSubmit={handleLogin}>
             <div className="grid gap-2">
@@ -45,7 +54,7 @@ export default function Login() {
               </label>
               <input
                 id="login-email"
-                className="field"
+                className={fieldClass}
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -59,7 +68,7 @@ export default function Login() {
               </label>
               <input
                 id="login-password"
-                className="field"
+                className={fieldClass}
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -67,7 +76,7 @@ export default function Login() {
                 required
               />
             </div>
-            <button type="submit" className="btn-primary" disabled={pending}>
+            <button type="submit" className={primaryButtonClass} disabled={pending}>
               {pending ? 'Входим...' : 'Войти в админ-панель'}
             </button>
           </form>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { loadServices } from '../lib/api';
-import { SectionIntro, StatusMessage } from './ui';
+import { SectionIntro, StatusMessage, sectionShellClass } from './ui';
 
 export default function Services() {
   const [services, setServices] = useState([]);
@@ -31,7 +31,7 @@ export default function Services() {
 
   return (
     <section id="services" className="border-t border-white/10 py-20 sm:py-24">
-      <div className="section-shell">
+      <div className={sectionShellClass}>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <SectionIntro
             eyebrow="Каталог услуг"
