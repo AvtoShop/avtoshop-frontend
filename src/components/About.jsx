@@ -1,47 +1,38 @@
-import React, { useEffect } from 'react';
-import '../styles/About.css';
+import { SectionIntro } from './ui';
 
-const About = () => {
-  // Функция для добавления класса для анимации при скроллинге
-  useEffect(() => {
-    const elements = document.querySelectorAll('.about__text');
-
-    const handleScroll = () => {
-      elements.forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-          element.classList.add('visible');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Для сразу анимации элементов, которые уже в области видимости
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
+export default function About() {
   return (
-    <section className="about" id="about">
-      <div className="about__container">
-        <h2 className="about__title">
-          О нас
-        </h2>
+    <section id="about" className="border-y border-white/10 py-20 sm:py-24">
+      <div className="section-shell">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:items-start">
+          <SectionIntro
+            eyebrow="О сервисе"
+            title="Работаем как мастерская с постоянным потоком, а не как шумный ресепшен."
+            copy="Сильная сторона AvtoShop не в декорациях, а в процессе: принять автомобиль, быстро локализовать проблему, согласовать объём работ и вернуть машину без сюрпризов в заказ-наряде."
+          />
 
-        <p className="about__text">
-          Автосервис <strong>AVTOSHOP</strong> — это команда профессионалов с более чем 10-летним опытом работы.
-          Мы специализируемся на ремонте и обслуживании автомобилей любой сложности. Используем только проверенные материалы и современное оборудование.
-        </p>
-
-        <p className="about__text">
-          Нам важно не просто починить автомобиль, а дать вам уверенность на дороге.
-          Мы ценим ваше время и предлагаем индивидуальный подход, честные цены и прозрачную работу.
-        </p>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="panel p-6 sm:p-7">
+              <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Подход</p>
+              <p className="mt-5 text-sm leading-7 text-muted sm:text-base">
+                Работаем с любым уровнем задач: от планового обслуживания до поиска плавающих неисправностей по ходовой, тормозам и электрике.
+              </p>
+            </div>
+            <div className="panel p-6 sm:p-7">
+              <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Коммуникация</p>
+              <p className="mt-5 text-sm leading-7 text-muted sm:text-base">
+                Объясняем по-человечески, что именно происходит с автомобилем, какие работы обязательны сейчас и что можно перенести без риска.
+              </p>
+            </div>
+            <div className="panel p-6 sm:col-span-2 sm:p-7">
+              <p className="text-xs uppercase tracking-[0.34em] text-accentSoft">Результат</p>
+              <p className="mt-5 max-w-3xl text-sm leading-7 text-muted sm:text-base">
+                Для клиента это выглядит просто: понятная диагностика, чистый сервисный процесс, фиксация цены до старта работ и аккуратная выдача автомобиля с рекомендациями на следующий интервал обслуживания.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
-};
-
-export default About;
+}

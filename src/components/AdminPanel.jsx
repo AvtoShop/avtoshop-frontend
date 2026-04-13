@@ -1,237 +1,312 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/AdminPanel.css';
+import { createService, deleteService, loadServices, updateService } from '../lib/api';
+import { setAdminAuthState } from '../lib/auth';
+import { StatusMessage } from './ui';
 
-const AdminPanel = () => {
-  const [services, setServices] = useState([]);
-  const [newService, setNewService] = useState({
-    name: '',
-    icon: '',
-    description: '',
-    price: ''
-  });
-  const [editingId, setEditingId] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+const createEmptyService = () => ({
+  name: '',
+  icon: '',
+  description: '',
+  price: ''
+});
+
+export default function AdminPanel() {
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
+  const [formData, setFormData] = useState(createEmptyService());
+  const [editingId, setEditingId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [usingFallback, setUsingFallback] = useState(false);
+  const [message, setMessage] = useState('');
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    fetchServices();
+    let mounted = true;
+
+    loadServices().then((result) => {
+      if (!mounted) {
+        return;
+      }
+
+      setServices(result.services);
+      setUsingFallback(result.usingFallback);
+      setMessage(
+        result.usingFallback
+          ? 'Сервер недоступен или пуст. В админ-панели включён локальный предпросмотр.'
+          : result.message
+      );
+      setSelectedId(result.services[0]?.id ?? null);
+      setLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const fetchServices = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/posts');
-      if (!response.ok) throw new Error('Ошибка загрузки услуг');
-      const data = await response.json();
-      setServices(data);
-      setIsLoading(false);
-    } catch (err) {
-      setError(err.message);
-      setIsLoading(false);
-    }
+  const selectedService = useMemo(
+    () => services.find((service) => service.id === selectedId) ?? null,
+    [selectedId, services]
+  );
+
+  const resetForm = () => {
+    setFormData(createEmptyService());
+    setEditingId(null);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewService(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setPending(true);
+    setMessage('');
 
     try {
-      const url = editingId 
-        ? `http://localhost:5000/api/post/${editingId}`
-        : 'http://localhost:5000/api/posts';
-      
-      const method = editingId ? 'PUT' : 'POST';
+      if (usingFallback) {
+        const localService = {
+          ...formData,
+          id: editingId ?? Date.now()
+        };
 
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newService),
-      });
-
-      if (!response.ok) throw new Error(editingId ? 'Ошибка обновления' : 'Ошибка добавления');
-      
-      const data = await response.json();
-      
-      if (editingId) {
-        setServices(services.map(s => s.id === editingId ? data : s));
-      } else {
-        setServices([...services, data]);
+        setServices((current) =>
+          editingId
+            ? current.map((service) => (service.id === editingId ? localService : service))
+            : [localService, ...current]
+        );
+        setSelectedId(localService.id);
+        setMessage(
+          editingId
+            ? 'Изменения сохранены локально в демо-режиме.'
+            : 'Новая услуга добавлена локально в демо-режиме.'
+        );
+        resetForm();
+        return;
       }
-      
-      setNewService({ name: '', icon: '', description: '', price: '' });
-      setEditingId(null);
-    } catch (err) {
-      setError(err.message);
+
+      const savedService = editingId
+        ? await updateService(editingId, formData)
+        : await createService(formData);
+
+      setServices((current) =>
+        editingId
+          ? current.map((service) => (service.id === editingId ? savedService : service))
+          : [savedService, ...current]
+      );
+      setSelectedId(savedService.id);
+      setMessage(editingId ? 'Услуга обновлена.' : 'Услуга добавлена.');
+      resetForm();
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setPending(false);
     }
   };
 
   const handleEdit = (service) => {
-    setNewService({
+    setEditingId(service.id);
+    setFormData({
       name: service.name,
-      icon: service.icon,
+      icon: service.icon ?? '',
       description: service.description,
       price: service.price
     });
-    setEditingId(service.id);
-    setSelectedService(null);
+    setSelectedId(service.id);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Вы уверены, что хотите удалить эту услугу?')) return;
+    if (!window.confirm('Удалить услугу из списка?')) {
+      return;
+    }
+
+    setMessage('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/post/${id}`, {
-        method: 'DELETE'
-      });
+      if (usingFallback) {
+        setServices((current) => current.filter((service) => service.id !== id));
+        setSelectedId((current) => (current === id ? null : current));
+        if (editingId === id) {
+          resetForm();
+        }
+        setMessage('Услуга удалена локально в демо-режиме.');
+        return;
+      }
 
-      if (!response.ok) throw new Error('Ошибка удаления услуги');
-      
-      setServices(services.filter(service => service.id !== id));
-    } catch (err) {
-      setError(err.message);
+      await deleteService(id);
+      setServices((current) => current.filter((service) => service.id !== id));
+      setSelectedId((current) => (current === id ? null : current));
+      if (editingId === id) {
+        resetForm();
+      }
+      setMessage('Услуга удалена.');
+    } catch (error) {
+      setMessage(error.message);
     }
   };
 
-  const handleCancelEdit = () => {
-    setNewService({ name: '', icon: '', description: '', price: '' });
-    setEditingId(null);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('myProject_isAdmin');
-navigate('/');
+    setAdminAuthState(false);
     navigate('/login');
   };
 
-  if (isLoading) return <div className="admin-loading">Загрузка услуг...</div>;
-  if (error) return <div className="admin-error">{error}</div>;
+  if (loading) {
+    return (
+      <section className="section-shell py-14 sm:py-20">
+        <StatusMessage>Загружаем список услуг для админ-панели...</StatusMessage>
+      </section>
+    );
+  }
 
   return (
-    <div className="admin-container">
-      <div className="admin-header">
-        <h1 className="admin-title">Админ-панель AvtoShop</h1>
-        <button onClick={handleLogout} className="admin-logout-btn">
+    <section className="section-shell py-14 sm:py-20">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="eyebrow">Админ-панель</p>
+          <h1 className="section-title">Управление услугами и локальным предпросмотром.</h1>
+          <p className="section-copy mt-4">
+            Создание, редактирование и удаление используют API, а при недоступности сервера продолжают работать локально.
+          </p>
+        </div>
+        <button type="button" className="btn-secondary" onClick={handleLogout}>
           Выйти
         </button>
       </div>
 
-      {error && <div className="admin-error">{error}</div>}
+      <div className="mt-8 space-y-4">
+        {message ? <StatusMessage>{message}</StatusMessage> : null}
+        {usingFallback ? (
+          <StatusMessage>
+            Сервер сейчас недоступен, поэтому все действия выполняются локально и остаются только в демо-режиме.
+          </StatusMessage>
+        ) : null}
+      </div>
 
-      <div className="admin-content">
-        <div className="admin-form-section">
-          <h2 className="admin-section-title">
-            {editingId ? 'Редактировать услугу' : 'Добавить новую услугу'}
-          </h2>
-          <form onSubmit={handleSubmit} className="admin-form">
-            <div className="admin-form-group">
-              <input
-                type="text"
-                name="name"
-                value={newService.name}
-                onChange={handleInputChange}
-                placeholder="Название услуги"
-                className="admin-input"
-                required
-              />
-            </div>
-            <div className="admin-form-group">
-              <input
-                type="text"
-                name="icon"
-                value={newService.icon}
-                onChange={handleInputChange}
-                placeholder="Изображение или иконка"
-                className="admin-input"
-                required
-              />
-            </div>
-            <div className="admin-form-group">
-              <textarea
-                name="description"
-                value={newService.description}
-                onChange={handleInputChange}
-                placeholder="Описание услуги"
-                className="admin-textarea"
-                required
-              />
-            </div>
-            <div className="admin-form-group">
-              <input
-                type="text"
-                name="price"
-                value={newService.price}
-                onChange={handleInputChange}
-                placeholder="Цена"
-                className="admin-input"
-                required
-              />
-            </div>
-            <button type="submit" className="admin-submit-btn">
-              {editingId ? 'Обновить' : 'Добавить'}
-            </button>
-            {editingId && (
-              <button 
-                type="button"
-                className="admin-cancel-btn"
-                onClick={handleCancelEdit}
-              >
-                Отмена
+      <div className="mt-10 grid gap-8 xl:grid-cols-[minmax(360px,0.72fr)_minmax(0,1fr)]">
+        <div className="panel p-6 sm:p-8">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-lg font-semibold uppercase tracking-[0.08em] text-copy">
+              {editingId ? 'Редактирование услуги' : 'Новая услуга'}
+            </h2>
+            {editingId ? (
+              <button type="button" className="text-xs uppercase tracking-[0.24em] text-muted" onClick={resetForm}>
+                Сбросить
               </button>
-            )}
+            ) : null}
+          </div>
+
+          <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
+            <input
+              className="field"
+              type="text"
+              name="name"
+              placeholder="Название услуги"
+              value={formData.name}
+              onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))}
+              required
+            />
+            <input
+              className="field"
+              type="text"
+              name="icon"
+              placeholder="Код иконки или метка"
+              value={formData.icon}
+              onChange={(event) => setFormData((current) => ({ ...current, icon: event.target.value }))}
+              required
+            />
+            <textarea
+              className="field min-h-32 resize-y"
+              name="description"
+              placeholder="Описание услуги"
+              value={formData.description}
+              onChange={(event) => setFormData((current) => ({ ...current, description: event.target.value }))}
+              required
+            />
+            <input
+              className="field"
+              type="text"
+              name="price"
+              placeholder="Цена"
+              value={formData.price}
+              onChange={(event) => setFormData((current) => ({ ...current, price: event.target.value }))}
+              required
+            />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button type="submit" className="btn-primary" disabled={pending}>
+                {pending ? 'Сохраняем...' : editingId ? 'Обновить услугу' : 'Добавить услугу'}
+              </button>
+              {editingId ? (
+                <button type="button" className="btn-secondary" onClick={resetForm}>
+                  Отмена
+                </button>
+              ) : null}
+            </div>
           </form>
         </div>
 
-        <div className="admin-services-section">
-          <h2 className="admin-section-title">Список услуг</h2>
-          <div className="admin-services-grid">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                className={`admin-service-card ${selectedService === service ? 'active' : ''}`}
-                onClick={() => setSelectedService(service === selectedService ? null : service)}
-              >
-                <div className="admin-service-header">
-                   <h3 className="admin-service-name">{service.name}</h3>
-                  <span className="admin-service-price">{service.price}</span>
-                </div>
-                
-                {selectedService === service && (
-// В компоненте AdminPanel.jsx замените блок admin-service-actions на:
-                <div className="admin-service-actions">
-                  <button 
-                    className="admin-edit-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEdit(service);
-                    }}
-                  >
-                    Редактировать
-                  </button>
-                  <button 
-                    className="admin-delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(service.id);
-                    }}
-                  >
-                    Удалить
-                  </button>
-                </div>
-                )}
-              </div>
-            ))}
+        <div className="space-y-4">
+          <div className="grid gap-4">
+            {services.length === 0 ? (
+              <StatusMessage>Список услуг пуст. Добавьте первую запись через форму слева.</StatusMessage>
+            ) : null}
+
+            {services.map((service) => {
+              const active = service.id === selectedId;
+
+              return (
+                <article
+                  key={service.id}
+                  className={`panel cursor-pointer p-6 transition duration-300 ${active ? 'border-accent/60 bg-white/[0.06]' : ''}`}
+                  onClick={() => setSelectedId(active ? null : service.id)}
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold uppercase tracking-[0.08em] text-copy">{service.name}</h3>
+                      <p className="mt-2 text-sm text-accentSoft">{service.price}</p>
+                    </div>
+                    <p className="text-xs uppercase tracking-[0.26em] text-muted">{active ? 'Выбрано' : 'Открыть'}</p>
+                  </div>
+
+                  {active ? (
+                    <div className="mt-5 space-y-5 border-t border-white/10 pt-5">
+                      <p className="text-sm leading-7 text-muted">{service.description}</p>
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleEdit(service);
+                          }}
+                        >
+                          Редактировать
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-secondary !border-accent/30 !text-accentSoft"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleDelete(service.id);
+                          }}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
+
+          {selectedService ? (
+            <div className="panel p-6">
+              <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Предпросмотр выбранной услуги</p>
+              <h3 className="mt-4 text-2xl font-semibold uppercase tracking-[0.08em] text-copy">{selectedService.name}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted">{selectedService.description}</p>
+              <p className="mt-4 text-lg font-semibold text-copy">{selectedService.price}</p>
+            </div>
+          ) : null}
         </div>
       </div>
-    </div>
+    </section>
   );
-};
-
-export default AdminPanel;
+}

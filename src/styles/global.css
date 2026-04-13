@@ -5,6 +5,9 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'Arial', sans-serif;
@@ -22,4 +25,5 @@ body {
 
 section {
   padding: 60px 0;
+  scroll-margin-top: 110px;
 }

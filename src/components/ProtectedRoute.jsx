@@ -1,6 +1,12 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { getAdminAuthState } from '../lib/auth';
 
-export default function AdminRoute({ children }) {
-  const isAdmin = localStorage.getItem('isAdmin') === 'true';
-  return isAdmin ? children : <Navigate to="/login" />;
+export default function ProtectedRoute({ children }) {
+  const location = useLocation();
+
+  if (!getAdminAuthState()) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  return children;
 }

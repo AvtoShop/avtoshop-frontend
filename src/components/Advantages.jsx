@@ -1,30 +1,28 @@
-import React from 'react';
-import '../styles/Advantages.css';  
+import { ADVANTAGES } from '../lib/constants';
+import { SectionIntro } from './ui';
 
-const advantages = [
-  { icon: "⭐", title: "Качество работы", description: "Высокое качество ремонта и обслуживания автомобилей." },
-  { icon: "⏱️", title: "Скорость выполнения", description: "Быстрое и качественное выполнение всех услуг." },
-  { icon: "💸", title: "Доступные цены", description: "Предлагаем выгодные цены на все виды ремонта и обслуживания." },
-  { icon: "🔧", title: "Профессиональные мастера", description: "Работают только квалифицированные специалисты с опытом." },
-];
-
-const Advantages = () => {
+export default function Advantages() {
   return (
-    <section className="advantages" id="advantages">
-      <div className="advantages__container">
-        <h2 className="advantages__title">Наши Преимущества</h2>
-        <div className="advantages__grid">
-          {advantages.map((advantage, index) => (
-            <div key={index} className="advantage__card">
-              <div className="advantage__icon">{advantage.icon}</div>
-              <h3 className="advantage__title">{advantage.title}</h3>
-              <p className="advantage__description">{advantage.description}</p>
-            </div>
-          ))}
+    <section id="advantages" className="py-20 sm:py-24">
+      <div className="section-shell">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+          <SectionIntro
+            eyebrow="Почему AvtoShop"
+            title="Сервис с рабочей дисциплиной, а не с витринной подачей."
+            copy="Нам важнее читаемая диагностика, прозрачный список работ и предсказуемый результат, чем громкие обещания. Поэтому каждый блок процесса виден заранее."
+          />
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            {ADVANTAGES.map((item) => (
+              <article key={item.title} className="panel h-full p-6">
+                <p className="font-display text-4xl font-semibold uppercase tracking-[0.08em] text-accentSoft">{item.metric}</p>
+                <h3 className="mt-5 text-lg font-semibold uppercase tracking-[0.08em] text-copy">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-muted">{item.description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default Advantages;
+}

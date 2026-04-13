@@ -239,6 +239,15 @@
   border: 1px solid #7f1d1d;
 }
 
+.admin-preview-note {
+  background-color: rgba(255, 87, 51, 0.12);
+  color: var(--text-primary);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 87, 51, 0.35);
+}
+
 .admin-loading {
   text-align: center;
   padding: 2rem;

@@ -1,41 +1,56 @@
-import React from 'react';
-import '../styles/Contact.css';
+import { CONTACT_INFO } from '../lib/constants';
+import { SectionIntro } from './ui';
 
-const Contact = () => {
+export default function Contact() {
   return (
-    <section className="contact" id="contact">
-      <div className="contact__container">
-        <h2 className="contact__title">Контакты</h2>
-        
-        <div className="contact__info">
-          <div className="contact__address">
-            <h3>Адрес:</h3>
-            <p>Гражданская ул., 95, Тихорецк</p>
+    <section id="contact" className="border-t border-white/10 py-20 sm:py-24">
+      <div className="section-shell">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)]">
+          <div className="space-y-6">
+            <SectionIntro
+              eyebrow="Контакты"
+              title="Приехать, позвонить или просто уточнить объём работ можно без длинной цепочки согласований."
+              copy="Ориентир простой: сервис в Тихорецке, рабочий график каждый день и два прямых номера для связи по ремонту и магазину."
+            />
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="panel p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Адрес</p>
+                <p className="mt-4 text-lg font-semibold text-copy">
+                  {CONTACT_INFO.city}, {CONTACT_INFO.address}
+                </p>
+              </div>
+              <div className="panel p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">График</p>
+                <p className="mt-4 text-lg font-semibold text-copy">{CONTACT_INFO.schedule}</p>
+              </div>
+              <div className="panel p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Сервис</p>
+                <a className="mt-4 block text-lg font-semibold text-copy transition hover:text-accentSoft" href={CONTACT_INFO.primaryPhoneHref}>
+                  {CONTACT_INFO.primaryPhone}
+                </a>
+              </div>
+              <div className="panel p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Магазин</p>
+                <a className="mt-4 block text-lg font-semibold text-copy transition hover:text-accentSoft" href={CONTACT_INFO.secondaryPhoneHref}>
+                  {CONTACT_INFO.secondaryPhone}
+                </a>
+              </div>
+            </div>
           </div>
-          
-          <div className="contact__phone">
-            <h3>Контактные телефоны:</h3>
-            <p><strong>СТО:</strong> <a href="tel:+79094521010">+7 (909) 452-10-10</a></p>
-            <p><strong>Магазин:</strong> <a href="tel:+79182309777">+7 (918) 230-97-77</a></p>
+
+          <div className="panel overflow-hidden">
+            <iframe
+              title="Карта расположения AvtoShop в Тихорецке"
+              src="https://yandex.ru/map-widget/v1/?ll=40.130395%2C45.870130&pt=40.130395%2C45.870130&z=17&l=map"
+              className="h-[420px] w-full border-0"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
           </div>
         </div>
-
-        {/* Вставка карты с точкой */}
-        <div className="contact__map">
-          <iframe
-            src="https://yandex.ru/map-widget/v1/?ll=40.130395%2C45.870130&pt=40.130395%2C45.870130&z=17&l=map"
-            width="100%"
-            height="450"
-            frameBorder="0"
-            style={{ border: '0' }}
-            allowFullScreen=""
-            aria-hidden="false"
-            tabIndex="0"
-          ></iframe>
-       </div>
       </div>
     </section>
   );
-};
-
-export default Contact;
+}
