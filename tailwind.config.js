@@ -16,7 +16,7 @@ export default {
       },
       fontFamily: {
         sans: ['"Segoe UI"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-        display: ['"Arial Narrow"', '"Segoe UI"', 'Arial', 'sans-serif']
+        display: ['Rubik', '"Segoe UI"', 'Arial', 'sans-serif']
       },
       boxShadow: {
         glow: '0 22px 60px rgba(0, 0, 0, 0.32)',

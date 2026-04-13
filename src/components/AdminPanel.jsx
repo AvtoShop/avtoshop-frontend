@@ -183,7 +183,7 @@ export default function AdminPanel() {
       <div className="mt-10 grid gap-8 xl:grid-cols-[minmax(360px,0.72fr)_minmax(0,1fr)]">
         <div className="panel p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-lg font-semibold uppercase tracking-[0.08em] text-copy">
+            <h2 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">
               {editingId ? 'Редактирование услуги' : 'Новая услуга'}
             </h2>
             {editingId ? (
@@ -259,7 +259,7 @@ export default function AdminPanel() {
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold uppercase tracking-[0.08em] text-copy">{service.name}</h3>
+                      <h3 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{service.name}</h3>
                       <p className="mt-2 text-sm text-accentSoft">{service.price}</p>
                     </div>
                     <p className="text-xs uppercase tracking-[0.26em] text-muted">{active ? 'Выбрано' : 'Открыть'}</p>
@@ -300,7 +300,7 @@ export default function AdminPanel() {
           {selectedService ? (
             <div className="panel p-6">
               <p className="text-xs uppercase tracking-[0.28em] text-accentSoft">Предпросмотр выбранной услуги</p>
-              <h3 className="mt-4 text-2xl font-semibold uppercase tracking-[0.08em] text-copy">{selectedService.name}</h3>
+              <h3 className="mt-4 font-sans text-2xl font-semibold leading-tight tracking-[0.01em] text-copy">{selectedService.name}</h3>
               <p className="mt-3 text-sm leading-7 text-muted">{selectedService.description}</p>
               <p className="mt-4 text-lg font-semibold text-copy">{selectedService.price}</p>
             </div>

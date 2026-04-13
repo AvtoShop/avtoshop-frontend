@@ -1,4 +1,9 @@
 /* global.css */
+:root {
+  --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,7 +15,7 @@ html {
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: var(--font-sans);
   background-color: #232323; 
   color: white; 
   height: 100vh;

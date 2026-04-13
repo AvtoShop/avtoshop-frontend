@@ -17,7 +17,7 @@ export default function Hero() {
         <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(300px,0.55fr)]">
           <div className="max-w-3xl animate-fade-up">
             <p className="mb-5 text-sm uppercase tracking-[0.42em] text-accentSoft">{BRAND_COPY.name}</p>
-            <h1 className="max-w-3xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.04em] text-white sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl font-sans text-5xl font-semibold leading-[0.98] tracking-[0.01em] text-white sm:text-6xl lg:text-7xl">
               {BRAND_COPY.heroTitle}
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-white sm:text-lg">{BRAND_COPY.heroText}</p>

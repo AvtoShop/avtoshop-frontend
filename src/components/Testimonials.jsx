@@ -88,7 +88,7 @@ export default function Testimonials() {
               <article key={review.id} className="panel p-6 sm:p-7">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold uppercase tracking-[0.08em] text-copy">{review.name}</h3>
+                    <h3 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{review.name}</h3>
                     <p className="mt-3 text-sm leading-7 text-muted">{review.text}</p>
                   </div>
                   <StarRating rating={review.rating} />

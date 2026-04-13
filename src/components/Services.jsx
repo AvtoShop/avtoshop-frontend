@@ -67,7 +67,7 @@ export default function Services() {
 
                 <button type="button" className="group text-left" onClick={() => setExpandedId(expanded ? null : service.id)}>
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                    <h3 className="max-w-2xl font-display text-2xl uppercase tracking-[0.08em] text-copy transition duration-300 group-hover:text-accentSoft">
+                    <h3 className="max-w-2xl font-sans text-2xl font-semibold leading-tight tracking-[0.01em] text-copy transition duration-300 group-hover:text-accentSoft">
                       {service.name}
                     </h3>
                     <p className="text-sm text-muted md:hidden">{service.price}</p>

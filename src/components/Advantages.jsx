@@ -15,8 +15,8 @@ export default function Advantages() {
           <div className="grid gap-4 sm:grid-cols-3">
             {ADVANTAGES.map((item) => (
               <article key={item.title} className="panel h-full p-6">
-                <p className="font-display text-4xl font-semibold uppercase tracking-[0.08em] text-accentSoft">{item.metric}</p>
-                <h3 className="mt-5 text-lg font-semibold uppercase tracking-[0.08em] text-copy">{item.title}</h3>
+                <p className="font-sans text-4xl font-semibold uppercase tracking-[0.08em] text-accentSoft">{item.metric}</p>
+                <h3 className="mt-5 font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{item.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-muted">{item.description}</p>
               </article>
             ))}

@@ -2,7 +2,6 @@
     background-color: #111;
     color: #fff;
     padding: 80px 24px;
-    font-family: 'Montserrat', sans-serif;
   }
   
   .contact__container {
@@ -12,6 +11,7 @@
   }
   
   .contact__title {
+    font-family: var(--font-display);
     font-size: 2.5rem;
     margin-bottom: 48px;
     color: #FF5733; /* Яркий акцентный цвет для заголовка */
@@ -35,6 +35,7 @@
   
   .contact__address h3,
   .contact__phone h3 {
+    font-family: var(--font-display);
     font-size: 1.5rem;
     margin-bottom: 16px;
     color: #fff;

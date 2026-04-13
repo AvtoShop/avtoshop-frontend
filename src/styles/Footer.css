@@ -1,7 +1,6 @@
 .footer {
     background-color: #111;
     color: #ccc;
-    font-family: 'Montserrat', sans-serif;
     padding: 48px 0 24px;
     border-top: 0.5px solid #FF5733;
   }
@@ -16,12 +15,14 @@
   }
   
   .footer__section h2 {
+    font-family: var(--font-display);
     color: #FF5733;
     font-size: 1.6rem;
     margin-bottom: 12px;
   }
   
   .footer__section h4 {
+    font-family: var(--font-display);
     color: #fff;
     font-size: 1.1rem;
     margin-bottom: 10px;
