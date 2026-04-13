@@ -39,11 +39,11 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="panel overflow-hidden">
+          <div className="panel min-h-[420px] overflow-hidden lg:h-full">
             <iframe
               title="Карта расположения AvtoShop в Тихорецке"
               src="https://yandex.ru/map-widget/v1/?ll=40.130395%2C45.870130&pt=40.130395%2C45.870130&z=17&l=map"
-              className="h-[420px] w-full border-0"
+              className="block h-full min-h-[420px] w-full border-0"
               allowFullScreen
               loading="lazy"
               referrerPolicy="strict-origin-when-cross-origin"
