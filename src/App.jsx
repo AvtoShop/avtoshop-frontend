@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Analytics } from '@vercel/analytics/react';
 
 function ScrollToHash() {
   const location = useLocation();
@@ -72,6 +73,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollToHash />
       <AppShell />
+      <Analytics />
     </BrowserRouter>
   );
 }
