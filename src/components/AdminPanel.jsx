@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createService, deleteService, loadServices, updateService } from '../lib/api';
-import { setAdminAuthState } from '../lib/auth';
+import {
+  createService,
+  deleteService,
+  isAuthError,
+  loadServices,
+  logoutAdmin,
+  updateService
+} from '../lib/api';
 import {
   StatusMessage,
   eyebrowClass,
@@ -72,27 +78,6 @@ export default function AdminPanel() {
     setMessage('');
 
     try {
-      if (usingFallback) {
-        const localService = {
-          ...formData,
-          id: editingId ?? Date.now()
-        };
-
-        setServices((current) =>
-          editingId
-            ? current.map((service) => (service.id === editingId ? localService : service))
-            : [localService, ...current]
-        );
-        setSelectedId(localService.id);
-        setMessage(
-          editingId
-            ? 'Изменения сохранены локально в демо-режиме.'
-            : 'Новая услуга добавлена локально в демо-режиме.'
-        );
-        resetForm();
-        return;
-      }
-
       const savedService = editingId
         ? await updateService(editingId, formData)
         : await createService(formData);
@@ -106,6 +91,12 @@ export default function AdminPanel() {
       setMessage(editingId ? 'Услуга обновлена.' : 'Услуга добавлена.');
       resetForm();
     } catch (error) {
+      if (isAuthError(error)) {
+        await logoutAdmin();
+        navigate('/login');
+        return;
+      }
+
       setMessage(error.message);
     } finally {
       setPending(false);
@@ -131,16 +122,6 @@ export default function AdminPanel() {
     setMessage('');
 
     try {
-      if (usingFallback) {
-        setServices((current) => current.filter((service) => service.id !== id));
-        setSelectedId((current) => (current === id ? null : current));
-        if (editingId === id) {
-          resetForm();
-        }
-        setMessage('Услуга удалена локально в демо-режиме.');
-        return;
-      }
-
       await deleteService(id);
       setServices((current) => current.filter((service) => service.id !== id));
       setSelectedId((current) => (current === id ? null : current));
@@ -149,12 +130,18 @@ export default function AdminPanel() {
       }
       setMessage('Услуга удалена.');
     } catch (error) {
+      if (isAuthError(error)) {
+        await logoutAdmin();
+        navigate('/login');
+        return;
+      }
+
       setMessage(error.message);
     }
   };
 
-  const handleLogout = () => {
-    setAdminAuthState(false);
+  const handleLogout = async () => {
+    await logoutAdmin();
     navigate('/login');
   };
 
@@ -173,7 +160,7 @@ export default function AdminPanel() {
           <p className={eyebrowClass}>Админ-панель</p>
           <h1 className={sectionTitleClass}>Управление услугами и локальным предпросмотром.</h1>
           <p className={`${sectionCopyClass} mt-4`}>
-            Создание, редактирование и удаление используют API, а при недоступности сервера продолжают работать локально.
+            Создание, редактирование и удаление выполняются через backend API и требуют действующей авторизации администратора.
           </p>
         </div>
         <button type="button" className={secondaryButtonClass} onClick={handleLogout}>
@@ -185,7 +172,7 @@ export default function AdminPanel() {
         {message ? <StatusMessage>{message}</StatusMessage> : null}
         {usingFallback ? (
           <StatusMessage>
-            Сервер сейчас недоступен, поэтому все действия выполняются локально и остаются только в демо-режиме.
+            Сервер сейчас недоступен, поэтому список показан в режиме предпросмотра. Изменения недоступны, пока API не ответит.
           </StatusMessage>
         ) : null}
       </div>
@@ -240,7 +227,7 @@ export default function AdminPanel() {
               required
             />
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button type="submit" className={primaryButtonClass} disabled={pending}>
+              <button type="submit" className={primaryButtonClass} disabled={pending || usingFallback}>
                 {pending ? 'Сохраняем...' : editingId ? 'Обновить услугу' : 'Добавить услугу'}
               </button>
               {editingId ? (
@@ -292,6 +279,7 @@ export default function AdminPanel() {
                         <button
                           type="button"
                           className={`${secondaryButtonClass} !border-accent/30 !text-accentSoft`}
+                          disabled={usingFallback}
                           onClick={(event) => {
                             event.stopPropagation();
                             handleDelete(service.id);

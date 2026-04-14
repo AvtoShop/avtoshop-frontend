@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setAdminAuthState } from '../lib/auth';
+import { loginAdmin } from '../lib/api';
+import { setAuthSession } from '../lib/auth';
 import { BRAND_COPY } from '../lib/constants';
 import {
   StatusMessage,
@@ -26,9 +27,18 @@ export default function Login() {
     setMessage('');
 
     try {
-      setAdminAuthState(true);
-      setMessage('Демо-вход выполнен. Админ-панель доступна даже без ответа сервера.');
+      const result = await loginAdmin({
+        email: email.trim(),
+        password
+      });
+
+      setAuthSession({
+        token: result.token,
+        user: result.user
+      });
       navigate('/admin');
+    } catch (error) {
+      setMessage(error.message || 'Не удалось выполнить вход.');
     } finally {
       setPending(false);
     }
@@ -39,9 +49,9 @@ export default function Login() {
       <div className="grid min-h-[calc(100svh-13rem)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.7fr)] lg:items-center">
         <div className="max-w-2xl">
           <p className={eyebrowClass}>Вход администратора</p>
-          <h1 className={`${sectionTitleClass} max-w-xl`}>Доступ к управлению каталогом и локальному демо-режиму.</h1>
+          <h1 className={`${sectionTitleClass} max-w-xl`}>Доступ к управлению каталогом через защищённую авторизацию.</h1>
           <p className={`${sectionCopyClass} mt-5`}>
-            Маршрут и логика доступа сохранены, но авторизация остаётся не блокирующей: если backend недоступен, панель всё равно открывается для локального предпросмотра.
+            Авторизация проходит через backend API. Для доступа к админ-панели нужен корректный email и пароль администратора.
           </p>
         </div>
 
@@ -82,9 +92,7 @@ export default function Login() {
           </form>
 
           <div className="mt-5 space-y-3">
-            <StatusMessage>
-              Демо-режим сохранён: форма принимает данные и открывает защищённый маршрут даже без онлайн-авторизации.
-            </StatusMessage>
+            <StatusMessage>После успешного входа приложение сохранит токен и откроет защищённую админ-панель.</StatusMessage>
             {message ? <StatusMessage>{message}</StatusMessage> : null}
           </div>
         </div>

@@ -1,4 +1,4 @@
-export const ADMIN_STORAGE_KEY = 'avtoshop_admin_auth';
+export const ADMIN_STORAGE_KEY = 'avtoshop_admin_session';
 
 export const CONTACT_INFO = {
   city: 'Тихорецк',

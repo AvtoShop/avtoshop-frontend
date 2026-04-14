@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BRAND_COPY, NAV_ITEMS } from '../lib/constants';
-import { secondaryButtonClass } from './ui';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -57,13 +56,6 @@ export default function Header() {
               {item.label}
             </button>
           ))}
-          <button
-            type="button"
-            className="text-xs font-semibold uppercase tracking-[0.18em] text-muted transition hover:text-copy"
-            onClick={() => navigate('/login')}
-          >
-            Вход
-          </button>
         </nav>
 
         <button
@@ -94,13 +86,6 @@ export default function Header() {
                 {item.label}
               </button>
             ))}
-            <button
-              type="button"
-              className={`${secondaryButtonClass} justify-start rounded-2xl px-4 py-3 text-left normal-case tracking-normal`}
-              onClick={() => navigate('/login')}
-            >
-              Вход
-            </button>
           </div>
         </div>
       ) : null}

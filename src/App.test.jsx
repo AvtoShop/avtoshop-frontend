@@ -3,10 +3,34 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 import { ADMIN_STORAGE_KEY } from './lib/constants';
 
-const makeJsonResponse = (data, ok = true) => ({
+const makeJsonResponse = (data, { ok = true, status = ok ? 200 : 500 } = {}) => ({
   ok,
+  status,
   json: async () => data
 });
+
+const adminSession = {
+  token: 'test-token',
+  user: {
+    id: 1,
+    email: 'admin@avtoshop.ru',
+    role: 'admin'
+  }
+};
+
+const persistedService = {
+  id: 7,
+  name: 'Диагностика',
+  icon: 'scan',
+  description: 'Проверка автомобиля',
+  price: '1500 ₽',
+  createdAt: '2026-04-14T10:00:00Z',
+  updatedAt: '2026-04-14T10:00:00Z'
+};
+
+const seedSession = () => {
+  localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(adminSession));
+};
 
 describe('AvtoShop app', () => {
   beforeEach(() => {
@@ -24,7 +48,7 @@ describe('AvtoShop app', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((url) => {
-        if (String(url).includes('/api/posts')) {
+        if (String(url).includes('/api/services')) {
           return Promise.resolve(makeJsonResponse([]));
         }
 
@@ -45,25 +69,90 @@ describe('AvtoShop app', () => {
     expect(screen.getByRole('heading', { name: /приехать, позвонить/i })).toBeInTheDocument();
   });
 
-  it('allows demo login and logout via shared auth state', async () => {
-    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(makeJsonResponse([]))));
+  it('logs in through the backend and stores the auth session', async () => {
     const user = userEvent.setup();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url, options) => {
+        if (String(url).includes('/api/auth/login')) {
+          expect(options?.method).toBe('POST');
+          return Promise.resolve(
+            makeJsonResponse({
+              token: adminSession.token,
+              user: adminSession.user
+            })
+          );
+        }
+
+        if (String(url).includes('/api/services')) {
+          return Promise.resolve(makeJsonResponse([persistedService]));
+        }
+
+        if (String(url).includes('/api/reviews')) {
+          return Promise.resolve(makeJsonResponse([]));
+        }
+
+        if (String(url).includes('/api/auth/logout')) {
+          return Promise.resolve(makeJsonResponse({}));
+        }
+
+        return Promise.reject(new Error('unknown request'));
+      })
+    );
 
     window.history.pushState({}, '', '/login');
     render(<App />);
 
     await user.type(screen.getByLabelText(/email/i), 'admin@avtoshop.ru');
-    await user.type(screen.getByLabelText(/пароль/i), 'secret');
+    await user.type(screen.getByLabelText(/пароль/i), 'secret123');
     await user.click(screen.getByRole('button', { name: /войти в админ-панель/i }));
 
-    expect(localStorage.getItem(ADMIN_STORAGE_KEY)).toBe('true');
-    expect(await screen.findByRole('heading', { name: /управление услугами и локальным предпросмотром/i })).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY))).toEqual(adminSession);
+    expect(await screen.findByRole('heading', { name: /управление услугами/i })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /выйти/i }));
 
     await waitFor(() => {
       expect(window.location.pathname).toBe('/login');
     });
+    expect(localStorage.getItem(ADMIN_STORAGE_KEY)).toBeNull();
+  });
+
+  it('shows a backend error and keeps the user on login when auth fails', async () => {
+    const user = userEvent.setup();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url) => {
+        if (String(url).includes('/api/auth/login')) {
+          return Promise.resolve(
+            makeJsonResponse(
+              {
+                error: { message: 'Неверный логин или пароль.' }
+              },
+              { ok: false, status: 401 }
+            )
+          );
+        }
+
+        if (String(url).includes('/api/services') || String(url).includes('/api/reviews')) {
+          return Promise.resolve(makeJsonResponse([]));
+        }
+
+        return Promise.reject(new Error('unknown request'));
+      })
+    );
+
+    window.history.pushState({}, '', '/login');
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/email/i), 'admin@avtoshop.ru');
+    await user.type(screen.getByLabelText(/пароль/i), 'wrong-password');
+    await user.click(screen.getByRole('button', { name: /войти в админ-панель/i }));
+
+    expect(await screen.findByText(/неверный логин или пароль/i)).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/login');
     expect(localStorage.getItem(ADMIN_STORAGE_KEY)).toBeNull();
   });
 
@@ -76,7 +165,7 @@ describe('AvtoShop app', () => {
     await waitFor(() => {
       expect(window.location.pathname).toBe('/login');
     });
-    expect(screen.getByRole('heading', { name: /доступ к управлению каталогом/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /доступ к управлению каталогом через защищённую авторизацию/i })).toBeInTheDocument();
   });
 
   it('falls back to local services and testimonials when backend is unavailable', async () => {
@@ -92,6 +181,7 @@ describe('AvtoShop app', () => {
 
   it('submits testimonial locally when post request fails', async () => {
     const user = userEvent.setup();
+
     vi.stubGlobal(
       'fetch',
       vi.fn((url, options) => {
@@ -99,7 +189,7 @@ describe('AvtoShop app', () => {
           return Promise.reject(new Error('offline'));
         }
 
-        if (String(url).includes('/api/posts')) {
+        if (String(url).includes('/api/services')) {
           return Promise.resolve(makeJsonResponse([]));
         }
 
@@ -124,5 +214,108 @@ describe('AvtoShop app', () => {
     expect(await screen.findByText(/отзыв сохранён локально для демо-режима/i)).toBeInTheDocument();
     expect(screen.getByText(/тестовый клиент/i)).toBeInTheDocument();
     expect(screen.getAllByLabelText(/оценка 5 из 5/i).length).toBeGreaterThan(0);
+  });
+
+  it('sends the bearer token for protected admin writes', async () => {
+    const user = userEvent.setup();
+    seedSession();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url, options) => {
+        if (String(url).includes('/api/services') && !options?.method) {
+          return Promise.resolve(makeJsonResponse([persistedService]));
+        }
+
+        if (String(url).includes('/api/reviews')) {
+          return Promise.resolve(makeJsonResponse([]));
+        }
+
+        if (String(url).includes('/api/services') && options?.method === 'POST') {
+          expect(options?.headers?.Authorization).toBe(`Bearer ${adminSession.token}`);
+
+          return Promise.resolve(
+            makeJsonResponse({
+              id: 101,
+              name: 'Новая услуга',
+              icon: 'tool',
+              description: 'Описание',
+              price: '1000 ₽',
+              createdAt: '2026-04-14T10:00:00Z',
+              updatedAt: '2026-04-14T10:00:00Z'
+            })
+          );
+        }
+
+        if (String(url).includes('/api/auth/logout')) {
+          return Promise.resolve(makeJsonResponse({}));
+        }
+
+        return Promise.reject(new Error('unknown request'));
+      })
+    );
+
+    window.history.pushState({}, '', '/admin');
+    render(<App />);
+
+    await screen.findByRole('heading', { name: /управление услугами/i });
+    await user.type(screen.getByPlaceholderText(/название услуги/i), 'Новая услуга');
+    await user.type(screen.getByPlaceholderText(/код иконки или метка/i), 'tool');
+    await user.type(screen.getByPlaceholderText(/описание услуги/i), 'Описание');
+    await user.type(screen.getByPlaceholderText(/^цена$/i), '1000 ₽');
+    await user.click(screen.getByRole('button', { name: /добавить услугу/i }));
+
+    expect(await screen.findByText(/услуга добавлена/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/новая услуга/i).length).toBeGreaterThan(0);
+  });
+
+  it('clears auth and redirects to login when an admin write returns 401', async () => {
+    const user = userEvent.setup();
+    seedSession();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url, options) => {
+        if (String(url).includes('/api/services') && !options?.method) {
+          return Promise.resolve(makeJsonResponse([persistedService]));
+        }
+
+        if (String(url).includes('/api/reviews')) {
+          return Promise.resolve(makeJsonResponse([]));
+        }
+
+        if (String(url).includes('/api/services') && options?.method === 'POST') {
+          return Promise.resolve(
+            makeJsonResponse(
+              {
+                error: { message: 'Сессия истекла.' }
+              },
+              { ok: false, status: 401 }
+            )
+          );
+        }
+
+        if (String(url).includes('/api/auth/logout')) {
+          return Promise.resolve(makeJsonResponse({}));
+        }
+
+        return Promise.reject(new Error('unknown request'));
+      })
+    );
+
+    window.history.pushState({}, '', '/admin');
+    render(<App />);
+
+    await screen.findByRole('heading', { name: /управление услугами/i });
+    await user.type(screen.getByPlaceholderText(/название услуги/i), 'Новая услуга');
+    await user.type(screen.getByPlaceholderText(/код иконки или метка/i), 'tool');
+    await user.type(screen.getByPlaceholderText(/описание услуги/i), 'Описание');
+    await user.type(screen.getByPlaceholderText(/^цена$/i), '1000 ₽');
+    await user.click(screen.getByRole('button', { name: /добавить услугу/i }));
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe('/login');
+    });
+    expect(localStorage.getItem(ADMIN_STORAGE_KEY)).toBeNull();
   });
 });
