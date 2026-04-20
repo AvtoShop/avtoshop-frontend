@@ -12,5 +12,5 @@ export const useAdminPageViewModel = () => {
     void viewModel.load();
   }, [viewModel]);
 
-  return viewModel;
+    return viewModel;
 };
