@@ -161,6 +161,22 @@ describe('admin services integration', () => {
     expect(screen.getByRole('button', { name: /удалить/i })).toBeDisabled();
   });
 
+  it('keeps admin mutations enabled when the backend returns an empty service list', async () => {
+    stubFetch((url: string | URL | Request) => {
+      if (String(url).includes('/api/services')) {
+        return Promise.resolve(makeJsonResponse([]));
+      }
+
+      return Promise.reject(new Error('unknown request'));
+    });
+
+    renderAppAtRoute('/admin');
+
+    expect(await screen.findByText(/список услуг пуст/i)).toBeInTheDocument();
+    expect(screen.queryByText(/режиме предпросмотра/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /добавить услугу/i })).toBeEnabled();
+  });
+
   it('shows backend mutation errors and keeps the current service state intact', async () => {
     const user = userEvent.setup();
 

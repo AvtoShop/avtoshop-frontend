@@ -5,15 +5,13 @@ import { apiRequest } from './http-client';
 export const loadServices = async (): Promise<LoadServicesResult> => {
   try {
     const data = await apiRequest<Service[]>('/services');
-    const services = Array.isArray(data) && data.length > 0 ? data : mockServices;
+    const services = Array.isArray(data) ? data : mockServices;
 
     return {
       services,
       usingFallback: services === mockServices,
       message:
-        services === mockServices
-          ? 'Сервер вернул пустой список. Показываем локальный каталог услуг.'
-          : ''
+        services === mockServices ? 'Сервер вернул некорректный ответ. Показываем локальный каталог услуг.' : ''
     };
   } catch {
     return {

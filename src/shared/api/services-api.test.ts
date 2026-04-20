@@ -26,13 +26,23 @@ describe('services-api', () => {
     });
   });
 
-  it('falls back to mock services when the backend returns an empty list', async () => {
+  it('keeps an empty backend list without switching to fallback mode', async () => {
     apiRequestMock.mockResolvedValue([]);
+
+    await expect(loadServices()).resolves.toEqual({
+      services: [],
+      usingFallback: false,
+      message: ''
+    });
+  });
+
+  it('falls back to mock services when the backend returns a non-array payload', async () => {
+    apiRequestMock.mockResolvedValue({ items: [] });
 
     await expect(loadServices()).resolves.toEqual({
       services: mockServices,
       usingFallback: true,
-      message: 'Сервер вернул пустой список. Показываем локальный каталог услуг.'
+      message: 'Сервер вернул некорректный ответ. Показываем локальный каталог услуг.'
     });
   });
 

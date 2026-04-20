@@ -1,24 +1,22 @@
 # AvtoShop
 
-AvtoShop is a Vite + React frontend for an auto service website. It includes a public landing page, administrator login, and a protected admin panel for managing services.
+AvtoShop — это фронтенд-приложение на Vite + React для сайта автосервиса. Оно включает публичную лендинг-страницу, вход для администратора и защищённую админ-панель для управления услугами.
 
-This repository contains the frontend only. The backend API contract is described in [`openapi.json`](./openapi.json).
+## Возможности
 
-## Features
+- Публичная маркетинговая страница сервисного центра
+- Услуги и отзывы загружаются с бэкенда, с локальными резервными данными
+- Отправка отзывов с резервным поведением, устойчивым к офлайн-режиму
+- Вход администратора и защищённая административная зона
+- Создание, обновление и удаление услуг в админ-панели
 
-- Public marketing page for the service center
-- Services and reviews loaded from the backend with local fallback data
-- Review submission with offline-safe fallback behavior
-- Admin login and protected admin area
-- Service create, update, and delete flows in the admin panel
+## Маршруты
 
-## Routes
+- `/` публичная лендинг-страница
+- `/login` вход администратора
+- `/admin` защищённая админ-панель
 
-- `/` public landing page
-- `/login` administrator login
-- `/admin` protected admin panel
-
-## Stack
+## Стек
 
 - React 19
 - TypeScript
@@ -29,42 +27,25 @@ This repository contains the frontend only. The backend API contract is describe
 - Axios
 - Vitest
 
-## Development
+## Разработка
 
 ```bash
 npm install
-npm run dev
+vite dev
 ```
 
-## Build And Test
+## Сборка И Тесты
 
 ```bash
 npm run build
 npm test
 ```
 
-## Environment
+## Переменные окружения
 
-The app resolves the backend base URL from:
+Приложение определяет базовый URL бэкенда из:
 
 - `VITE_BACKEND_API_BASE_URL`
-- fallback: `BACKEND_API_BASE_URL`
+- резервное значение: `BACKEND_API_BASE_URL`
 
-If the value does not end with `/api`, the app appends `/api` automatically.
-
-Current default backend:
-
-```text
-https://convulsively-central-greyhound.cloudpub.ru/api
-```
-
-Example:
-
-```bash
-VITE_BACKEND_API_BASE_URL=http://localhost:5000
-```
-
-## Related
-
-- [`openapi.json`](./openapi.json)
-- [`BACKEND_BUILD_BRIEF.md`](./BACKEND_BUILD_BRIEF.md)
+Если значение не оканчивается на `/api`, приложение автоматически добавляет `/api`.
