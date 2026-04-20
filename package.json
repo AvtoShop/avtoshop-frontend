@@ -23,6 +23,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:unit": "vitest run --exclude \"src/**/*.integration.test.tsx\"",
+    "test:integration": "vitest run integration.test.tsx",
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
