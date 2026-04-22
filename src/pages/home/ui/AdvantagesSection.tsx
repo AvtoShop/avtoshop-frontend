@@ -12,7 +12,7 @@ export function AdvantagesSection() {
             copy="Нам важнее читаемая диагностика, прозрачный список работ и предсказуемый результат, чем громкие обещания. Поэтому каждый блок процесса виден заранее."
           />
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             {ADVANTAGES.map((item) => (
               <article key={item.title} className={`${panelClass} h-full p-6`}>
                 <p className="font-sans text-4xl font-semibold uppercase tracking-[0.08em] text-accentSoft">{item.metric}</p>

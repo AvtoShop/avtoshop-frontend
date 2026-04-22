@@ -1,6 +1,8 @@
 import { cleanup, render } from '@testing-library/react';
 import { vi } from 'vitest';
 import App from '../App';
+import { resetReviewsCache } from '../shared/api/reviews-api';
+import { resetServicesCache } from '../shared/api/services-api';
 import { ADMIN_STORAGE_KEY } from '../shared/config/content';
 import type { AuthSession, Service } from '../shared/model/types';
 
@@ -59,6 +61,8 @@ export const stubFetch = (
 
 export const resetAppTestState = () => {
   cleanup();
+  resetServicesCache();
+  resetReviewsCache();
   localStorage.clear();
   window.history.pushState({}, '', '/');
   window.confirm = vi.fn(() => true);

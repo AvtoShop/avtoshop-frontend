@@ -46,15 +46,17 @@ export function ServicesSection({
                 key={service.id}
                 className="grid gap-5 py-6 transition duration-300 md:grid-cols-[120px_minmax(0,1fr)_180px] md:items-start"
               >
+                <span className="text-left text-sm uppercase tracking-[0.32em] text-muted">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
                 <button
                   type="button"
-                  className="text-left text-sm uppercase tracking-[0.32em] text-muted"
+                  className="group text-left"
+                  aria-expanded={expanded}
+                  aria-controls={`service-description-${service.id}`}
                   onClick={() => onToggleService(service.id)}
                 >
-                  {String(index + 1).padStart(2, '0')}
-                </button>
-
-                <button type="button" className="group text-left" onClick={() => onToggleService(service.id)}>
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <h3 className="max-w-2xl font-sans text-2xl font-semibold leading-tight tracking-[0.01em] text-copy transition duration-300 group-hover:text-accentSoft">
                       {service.name}
@@ -62,6 +64,7 @@ export function ServicesSection({
                     <p className="text-sm text-muted md:hidden">{service.price}</p>
                   </div>
                   <div
+                    id={`service-description-${service.id}`}
                     className={`grid transition-all duration-300 ${expanded ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-70'}`}
                   >
                     <div className="overflow-hidden">
@@ -75,6 +78,8 @@ export function ServicesSection({
                   <button
                     type="button"
                     className="text-xs uppercase tracking-[0.26em] text-accentSoft"
+                    aria-expanded={expanded}
+                    aria-controls={`service-description-${service.id}`}
                     onClick={() => onToggleService(service.id)}
                   >
                     {expanded ? 'Свернуть' : 'Подробнее'}

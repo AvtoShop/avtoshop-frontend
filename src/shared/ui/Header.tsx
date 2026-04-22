@@ -12,7 +12,7 @@ export function Header() {
     const handleScroll = () => setScrolled(window.scrollY > 18);
     handleScroll();
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -21,7 +21,30 @@ export function Header() {
 
   useEffect(() => {
     setMenuOpen(false);
-  }, [location.pathname]);
+  }, [location.hash, location.pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      document.body.style.overflow = '';
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [menuOpen]);
 
   const goToSection = (sectionId: string) => {
     navigate({ pathname: '/', hash: `#${sectionId}` });
@@ -61,11 +84,12 @@ export function Header() {
         <button
           type="button"
           className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-copy lg:hidden"
-          aria-label="Открыть меню"
+          aria-controls="mobile-navigation"
+          aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((value) => !value)}
         >
-          <span className="flex flex-col gap-1.5">
+          <span className="flex flex-col gap-1.5" aria-hidden="true">
             <span className="h-0.5 w-5 bg-current" />
             <span className="h-0.5 w-5 bg-current" />
             <span className="h-0.5 w-5 bg-current" />
@@ -74,7 +98,10 @@ export function Header() {
       </div>
 
       {menuOpen ? (
-        <div className="pointer-events-auto mx-auto mt-3 max-w-7xl rounded-[2rem] border border-white/10 bg-black/85 p-5 shadow-glow backdrop-blur-xl lg:hidden">
+        <div
+          id="mobile-navigation"
+          className="pointer-events-auto mx-auto mt-3 max-w-7xl rounded-[2rem] border border-white/10 bg-black/85 p-5 shadow-glow backdrop-blur-xl lg:hidden"
+        >
           <div className="flex flex-col gap-3">
             {NAV_ITEMS.map((item) => (
               <button

@@ -29,7 +29,9 @@ describe('auth and session integration', () => {
     await waitFor(() => {
       expect(window.location.pathname).toBe('/login');
     });
-    expect(screen.getByRole('heading', { name: /доступ к управлению каталогом через защищённую авторизацию/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /доступ к управлению каталогом через защищённую авторизацию/i })
+    ).toBeInTheDocument();
   });
 
   it('logs in and redirects back to the protected admin route', async () => {
@@ -55,7 +57,7 @@ describe('auth and session integration', () => {
 
     renderAppAtRoute('/admin');
 
-    await user.type(screen.getByLabelText(/email/i), 'admin@avtoshop.ru');
+    await user.type(await screen.findByLabelText(/email/i), 'admin@avtoshop.ru');
     await user.type(screen.getByLabelText(/пароль/i), 'secret123');
     await user.click(screen.getByRole('button', { name: /войти в админ-панель/i }));
 
@@ -86,7 +88,7 @@ describe('auth and session integration', () => {
 
     renderAppAtRoute('/login');
 
-    await user.type(screen.getByLabelText(/email/i), 'admin@avtoshop.ru');
+    await user.type(await screen.findByLabelText(/email/i), 'admin@avtoshop.ru');
     await user.type(screen.getByLabelText(/пароль/i), 'wrong-password');
     await user.click(screen.getByRole('button', { name: /войти в админ-панель/i }));
 

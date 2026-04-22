@@ -7,14 +7,14 @@ export function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative -mt-24 min-h-[100svh] overflow-hidden pt-24">
+    <section className="relative -mt-24 min-h-screen min-h-[100svh] overflow-hidden pt-24">
       <div className="absolute inset-0">
         <img src={heroImage} alt="Автомобиль в сервисной зоне" className="h-full w-full object-cover object-center opacity-60" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,9,9,0.92)_0%,rgba(9,9,9,0.82)_42%,rgba(9,9,9,0.46)_100%)]" />
         <div className="absolute inset-0 bg-grid bg-[size:56px_56px] opacity-[0.08]" />
       </div>
 
-      <div className={`${sectionShellClass} relative flex min-h-[100svh] items-end pb-14 pt-28 sm:items-center sm:pb-20`}>
+      <div className={`${sectionShellClass} relative flex min-h-screen min-h-[100svh] items-end pb-14 pt-28 sm:items-center sm:pb-20`}>
         <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(300px,0.55fr)]">
           <div className="max-w-3xl animate-fade-up">
             <p className="mb-5 text-sm uppercase tracking-[0.42em] text-accentSoft">{BRAND_COPY.name}</p>

@@ -25,7 +25,7 @@ export const LoginPageView = observer(({ viewModel }: LoginPageViewProps) => {
 
   return (
     <section className={`${sectionShellClass} py-14 sm:py-20`}>
-      <div className="grid min-h-[calc(100svh-13rem)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.7fr)] lg:items-center">
+      <div className="grid min-h-[calc(100vh-13rem)] min-h-[calc(100svh-13rem)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.7fr)] lg:items-center">
         <div className="max-w-2xl">
           <p className={eyebrowClass}>Вход администратора</p>
           <h1 className={`${sectionTitleClass} max-w-xl`}>Доступ к управлению каталогом через защищённую авторизацию.</h1>

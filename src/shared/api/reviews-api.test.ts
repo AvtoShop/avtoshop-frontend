@@ -8,12 +8,13 @@ vi.mock('./http-client', () => ({
 }));
 
 import { mockReviews } from '../mocks/reviews';
-import { loadTestimonials, submitTestimonial } from './reviews-api';
+import { loadTestimonials, resetReviewsCache, submitTestimonial } from './reviews-api';
 
 describe('reviews-api', () => {
   beforeEach(() => {
     apiRequestMock.mockReset();
     nowMock.mockReset();
+    resetReviewsCache();
     vi.spyOn(Date, 'now').mockImplementation(nowMock);
   });
 

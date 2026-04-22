@@ -8,11 +8,12 @@ vi.mock('./http-client', () => ({
 
 import { mockServices } from '../mocks/services';
 import type { Service } from '../model/types';
-import { createService, deleteService, loadServices, updateService } from './services-api';
+import { createService, deleteService, loadServices, resetServicesCache, updateService } from './services-api';
 
 describe('services-api', () => {
   beforeEach(() => {
     apiRequestMock.mockReset();
+    resetServicesCache();
   });
 
   it('returns backend services when the api responds with data', async () => {

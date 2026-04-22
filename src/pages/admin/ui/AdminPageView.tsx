@@ -129,19 +129,26 @@ export const AdminPageView = observer(({ viewModel }: AdminPageViewProps) => {
               return (
                 <article
                   key={service.id}
-                  className={`${panelClass} cursor-pointer p-6 transition duration-300 ${active ? 'border-accent/60 bg-white/[0.06]' : ''}`}
-                  onClick={() => viewModel.toggleSelectedService(service.id)}
+                  className={`${panelClass} p-6 transition duration-300 ${active ? 'border-accent/60 bg-white/[0.06]' : ''}`}
                 >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{service.name}</h3>
-                      <p className="mt-2 text-sm text-accentSoft">{service.price}</p>
+                  <button
+                    type="button"
+                    className="w-full text-left"
+                    aria-expanded={active}
+                    aria-controls={`admin-service-${service.id}`}
+                    onClick={() => viewModel.toggleSelectedService(service.id)}
+                  >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h3 className="font-sans text-lg font-semibold leading-snug tracking-[0.01em] text-copy">{service.name}</h3>
+                        <p className="mt-2 text-sm text-accentSoft">{service.price}</p>
+                      </div>
+                      <p className="text-xs uppercase tracking-[0.26em] text-muted">{active ? 'Выбрано' : 'Открыть'}</p>
                     </div>
-                    <p className="text-xs uppercase tracking-[0.26em] text-muted">{active ? 'Выбрано' : 'Открыть'}</p>
-                  </div>
+                  </button>
 
                   {active ? (
-                    <div className="mt-5 space-y-5 border-t border-white/10 pt-5">
+                    <div id={`admin-service-${service.id}`} className="mt-5 space-y-5 border-t border-white/10 pt-5">
                       <p className="text-sm leading-7 text-muted">{service.description}</p>
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <button

@@ -42,6 +42,11 @@ export function TestimonialsSection({
     onFieldChange('rating', Number(event.target.value));
   };
 
+  const handleRatingInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value === '' ? 1 : Number(event.target.value);
+    onFieldChange('rating', nextValue);
+  };
+
   return (
     <section id="testimonials" className="py-20 sm:py-24">
       <div className={sectionShellClass}>
@@ -109,16 +114,37 @@ export function TestimonialsSection({
                     <label htmlFor="testimonial-rating" className="text-xs uppercase tracking-[0.24em] text-muted">
                       Оценка
                     </label>
-                    <input
-                      id="testimonial-rating"
-                      className={fieldClass}
-                      type="number"
-                      min="1"
-                      max="5"
-                      value={formData.rating}
-                      onChange={handleRatingChange}
-                      required
-                    />
+                    <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_88px_auto] sm:items-center">
+                      <input
+                        id="testimonial-rating"
+                        className={fieldClass}
+                        type="range"
+                        min="1"
+                        max="5"
+                        step="1"
+                        value={formData.rating}
+                        onChange={handleRatingChange}
+                        aria-describedby="testimonial-rating-value"
+                      />
+                      <input
+                        className={`${fieldClass} text-center`}
+                        type="number"
+                        min="1"
+                        max="5"
+                        step="1"
+                        inputMode="numeric"
+                        value={formData.rating}
+                        onChange={handleRatingInput}
+                        aria-label="Оценка числом"
+                      />
+                      <output
+                        id="testimonial-rating-value"
+                        htmlFor="testimonial-rating"
+                        className="inline-flex min-w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-copy"
+                      >
+                        {formData.rating}/5
+                      </output>
+                    </div>
                   </div>
                   <button type="submit" className={primaryButtonClass} disabled={submitPending}>
                     {submitPending ? 'Отправляем...' : 'Отправить отзыв'}
